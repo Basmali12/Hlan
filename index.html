@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نقاطي - شاهد إعلان واكسب</title>
+  <style>
+    :root { --r: 16px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Tahoma, Arial; margin: 0; background:#f6f7fb; color:#111; }
+    header { padding: 18px; background:#fff; border-bottom:1px solid #e9e9ee; position: sticky; top: 0; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 18px; }
+    .card { background:#fff; border:1px solid #ececf2; border-radius: var(--r); padding: 16px; box-shadow: 0 6px 20px rgba(0,0,0,.04); }
+    .row { display:flex; gap:12px; flex-wrap:wrap; }
+    .row > * { flex: 1 1 180px; }
+    .big { font-size: 24px; font-weight: 800; }
+    .muted { color:#666; font-size:14px; line-height:1.7; }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; background:#f1f2f7; font-size:13px; }
+    button { width:100%; padding:14px 12px; border:0; border-radius: 14px; font-size:16px; font-weight:700; cursor:pointer; }
+    button.primary { background:#22c55e; color:#fff; }
+    button.secondary { background:#111; color:#fff; }
+    button.ghost { background:#f1f2f7; color:#111; }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    input { width:100%; padding:12px; border-radius:12px; border:1px solid #e5e5ef; font-size:14px; }
+    hr { border:0; border-top:1px solid #eee; margin:14px 0; }
+    .tabs { display:flex; gap:10px; margin-top:10px; }
+    .tabs button { width:auto; padding:10px 12px; font-size:14px; border-radius:12px; }
+    .hide { display:none; }
+    .ok { color:#0a7a2a; font-weight:700; }
+    .warn { color:#b45309; font-weight:700; }
+    footer { padding: 24px 18px; color:#777; text-align:center; }
+    a { color: inherit; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap" style="padding:0 18px;">
+      <div class="row" style="align-items:center;">
+        <div style="flex: 1 1 auto;">
+          <div class="big">نقاطي ⭐</div>
+          <div class="muted">زر واحد — إعلان واحد — نقاط أكثر.</div>
+        </div>
+        <div class="pill">الإصدار: v1</div>
+      </div>
+
+      <div class="tabs">
+        <button class="ghost" id="tabHome">الرئيسية</button>
+        <button class="ghost" id="tabHow">كيف تشتغل؟</button>
+        <button class="ghost" id="tabPolicy">سياسة</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- HOME -->
+    <section id="home" class="card">
+      <div class="row">
+        <div class="card" style="padding:12px;">
+          <div class="muted">رصيدك الحالي</div>
+          <div class="big"><span id="points">0</span> نقطة</div>
+          <div class="muted">تتخزن تلقائيًا على جهازك.</div>
+        </div>
+
+        <div class="card" style="padding:12px;">
+          <div class="muted">الحالة</div>
+          <div id="status" class="muted">جاهز.</div>
+          <div class="muted" style="margin-top:8px;">آخر مكافأة: <span id="lastReward">—</span></div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="muted">ضع رابط Smartlink هنا:</div>
+      <input id="adUrl" placeholder="الصق رابط Smartlink هنا ثم احفظ" />
+      <div class="row" style="margin-top:10px;">
+        <button class="secondary" id="saveUrl">حفظ الرابط</button>
+        <button class="ghost" id="clearUrl">مسح</button>
+      </div>
+
+      <hr />
+
+      <button class="primary" id="watchBtn">شاهد إعلان واكسب +5 نقاط</button>
+
+      <div class="row" style="margin-top:10px;">
+        <button class="ghost" id="resetPoints">تصفير النقاط</button>
+        <button class="ghost" id="testNoAd">تجربة بدون إعلان</button>
+      </div>
+
+      <p class="muted" style="margin-top:12px;">
+        ملاحظة: المكافأة تعتمد على الرجوع بعد العدّاد. هذا نظام “تحفيز” مو إثبات مشاهدة 100%.
+      </p>
+    </section>
+
+    <!-- HOW -->
+    <section id="how" class="card hide">
+      <div class="big">شلون تشتغل؟</div>
+      <p class="muted">
+        1) تلصق رابط Smartlink من Adsterra داخل خانة الرابط وتضغط حفظ.<br/>
+        2) تضغط “شاهد إعلان” — ينفتح الرابط بتبويب جديد.<br/>
+        3) ترجع بعد ما يخلص العدّاد — تاخذ نقاط.<br/>
+      </p>
+      <div class="card" style="padding:12px;">
+        <div class="muted">
+          نصيحة: خَلّي المكافأة مرة كل فترة (كولداون) حتى ما يصير سبام.
+        </div>
+      </div>
+    </section>
+
+    <!-- POLICY -->
+    <section id="policy" class="card hide">
+      <div class="big">سياسة بسيطة</div>
+      <p class="muted">
+        هذا الموقع يعرض روابط إعلانية من طرف ثالث. نحن لا نجمع بيانات شخصية حساسة.
+        النقاط تُحفظ محليًا على جهازك فقط عبر التخزين المحلي (LocalStorage).
+      </p>
+      <p class="muted">
+        إذا واجهت إعلان مزعج أو غير مناسب، لا تفتح الرابط مرة ثانية وبلغنا داخل القناة/الصفحة الخاصة بك.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="muted">© نقاطي - نسخة تجريبية</div>
+  </footer>
+
+<script>
+  // ====== Settings (تقدر تغيرها لاحقاً) ======
+  const REWARD_POINTS = 5;      // كم نقطة لكل مرة
+  const WAIT_SECONDS = 15;      // كم ثانية ينتظر
+  const COOLDOWN_SECONDS = 60;  // منع تكرار (ثانية)
+
+  // ====== Storage keys ======
+  const K_POINTS = "p_points";
+  const K_URL = "p_ad_url";
+  const K_PENDING_UNTIL = "p_pending_until";
+  const K_COOLDOWN_UNTIL = "p_cooldown_until";
+  const K_LAST_REWARD = "p_last_reward";
+
+  // ====== Elements ======
+  const pointsEl = document.getElementById("points");
+  const statusEl = document.getElementById("status");
+  const lastRewardEl = document.getElementById("lastReward");
+  const adUrlInput = document.getElementById("adUrl");
+
+  const watchBtn = document.getElementById("watchBtn");
+  const saveUrlBtn = document.getElementById("saveUrl");
+  const clearUrlBtn = document.getElementById("clearUrl");
+  const resetPointsBtn = document.getElementById("resetPoints");
+  const testNoAdBtn = document.getElementById("testNoAd");
+
+  const tabHome = document.getElementById("tabHome");
+  const tabHow = document.getElementById("tabHow");
+  const tabPolicy = document.getElementById("tabPolicy");
+  const home = document.getElementById("home");
+  const how = document.getElementById("how");
+  const policy = document.getElementById("policy");
+
+  // ====== Helpers ======
+  const now = () => Date.now();
+  const getInt = (k, d=0) => parseInt(localStorage.getItem(k) || String(d), 10);
+  const setInt = (k, v) => localStorage.setItem(k, String(v));
+  const getStr = (k, d="") => localStorage.getItem(k) || d;
+  const setStr = (k, v) => localStorage.setItem(k, v);
+
+  function fmtTime(ts){
+    if(!ts) return "—";
+    const d = new Date(ts);
+    return d.toLocaleString("ar-IQ");
+  }
+
+  function setTab(which){
+    home.classList.add("hide");
+    how.classList.add("hide");
+    policy.classList.add("hide");
+    if(which==="home") home.classList.remove("hide");
+    if(which==="how") how.classList.remove("hide");
+    if(which==="policy") policy.classList.remove("hide");
+  }
+
+  function render(){
+    const pts = getInt(K_POINTS, 0);
+    pointsEl.textContent = pts;
+
+    const pendingUntil = getInt(K_PENDING_UNTIL, 0);
+    const cooldownUntil = getInt(K_COOLDOWN_UNTIL, 0);
+
+    adUrlInput.value = getStr(K_URL, "");
+
+    const lastReward = getInt(K_LAST_REWARD, 0);
+    lastRewardEl.textContent = fmtTime(lastReward);
+
+    // إذا عدّاد المكافأة شغال
+    if(pendingUntil > now()){
+      watchBtn.disabled = true;
+      const s = Math.ceil((pendingUntil - now())/1000);
+      statusEl.innerHTML = `<span class="warn">ارجع بعد ${s} ثانية حتى تستلم المكافأة…</span>`;
+      return;
+    }
+
+    // إذا انتهى الانتظار وهناك مكافأة معلّقة: امنحها مرة وحدة
+    if(pendingUntil && pendingUntil <= now()){
+      localStorage.removeItem(K_PENDING_UNTIL);
+      setInt(K_POINTS, pts + REWARD_POINTS);
+      setInt(K_LAST_REWARD, now());
+      statusEl.innerHTML = `<span class="ok">✅ تم إضافة +${REWARD_POINTS} نقاط!</span>`;
+    }
+
+    // كولداون
+    if(cooldownUntil > now()){
+      watchBtn.disabled = true;
+      const s = Math.ceil((cooldownUntil - now())/1000);
+      statusEl.innerHTML = `<span class="warn">انتظر ${s} ثانية قبل إعلان جديد.</span>`;
+      return;
+    }
+
+    watchBtn.disabled = false;
+    if(!getStr(K_URL,"")){
+      statusEl.innerHTML = `<span class="warn">ضع رابط Smartlink ثم احفظ.</span>`;
+      watchBtn.disabled = true;
+    } else {
+      statusEl.textContent = "جاهز.";
+    }
+  }
+
+  function startFlow(openAd){
+    const url = getStr(K_URL,"");
+    if(openAd && !url){
+      alert("لازم تلصق رابط Smartlink وتحفظه أولاً.");
+      return;
+    }
+
+    // منع تكرار
+    setInt(K_COOLDOWN_UNTIL, now() + COOLDOWN_SECONDS*1000);
+    // عداد المكافأة
+    setInt(K_PENDING_UNTIL, now() + WAIT_SECONDS*1000);
+
+    if(openAd) window.open(url, "_blank");
+    render();
+
+    // تحديث عداد كل ثانية
+    const t = setInterval(()=>{
+      render();
+      if(!localStorage.getItem(K_PENDING_UNTIL)) clearInterval(t);
+    }, 1000);
+  }
+
+  // ====== Events ======
+  saveUrlBtn.addEventListener("click", ()=>{
+    const v = adUrlInput.value.trim();
+    if(!v){ alert("ألصق رابط Smartlink أولاً."); return; }
+    setStr(K_URL, v);
+    render();
+    alert("تم حفظ الرابط ✅");
+  });
+
+  clearUrlBtn.addEventListener("click", ()=>{
+    localStorage.removeItem(K_URL);
+    adUrlInput.value = "";
+    render();
+  });
+
+  watchBtn.addEventListener("click", ()=> startFlow(true));
+  testNoAdBtn.addEventListener("click", ()=> startFlow(false));
+
+  resetPointsBtn.addEventListener("click", ()=>{
+    localStorage.removeItem(K_POINTS);
+    localStorage.removeItem(K_PENDING_UNTIL);
+    localStorage.removeItem(K_COOLDOWN_UNTIL);
+    localStorage.removeItem(K_LAST_REWARD);
+    render();
+  });
+
+  // رجوع المستخدم للصفحة
+  window.addEventListener("focus", render);
+  document.addEventListener("visibilitychange", render);
+
+  tabHome.addEventListener("click", ()=>setTab("home"));
+  tabHow.addEventListener("click", ()=>setTab("how"));
+  tabPolicy.addEventListener("click", ()=>setTab("policy"));
+
+  setTab("home");
+  render();
+</script>
+</body>
+</html>
