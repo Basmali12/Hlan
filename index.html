@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -20,17 +21,16 @@
     button.secondary { background:#111; color:#fff; }
     button.ghost { background:#f1f2f7; color:#111; }
     button:disabled { opacity:.55; cursor:not-allowed; }
-    input { width:100%; padding:12px; border-radius:12px; border:1px solid #e5e5ef; font-size:14px; }
     hr { border:0; border-top:1px solid #eee; margin:14px 0; }
-    .tabs { display:flex; gap:10px; margin-top:10px; }
+    .tabs { display:flex; gap:10px; margin-top:10px; flex-wrap: wrap; }
     .tabs button { width:auto; padding:10px 12px; font-size:14px; border-radius:12px; }
     .hide { display:none; }
     .ok { color:#0a7a2a; font-weight:700; }
     .warn { color:#b45309; font-weight:700; }
     footer { padding: 24px 18px; color:#777; text-align:center; }
-    a { color: inherit; }
   </style>
 </head>
+
 <body>
   <header>
     <div class="wrap" style="padding:0 18px;">
@@ -39,7 +39,7 @@
           <div class="big">نقاطي ⭐</div>
           <div class="muted">زر واحد — إعلان واحد — نقاط أكثر.</div>
         </div>
-        <div class="pill">الإصدار: v1</div>
+        <div class="pill">v1</div>
       </div>
 
       <div class="tabs">
@@ -69,15 +69,6 @@
 
       <hr />
 
-      <div class="muted">ضع رابط Smartlink هنا:</div>
-      <input id="adUrl" placeholder="الصق رابط Smartlink هنا ثم احفظ" />
-      <div class="row" style="margin-top:10px;">
-        <button class="secondary" id="saveUrl">حفظ الرابط</button>
-        <button class="ghost" id="clearUrl">مسح</button>
-      </div>
-
-      <hr />
-
       <button class="primary" id="watchBtn">شاهد إعلان واكسب +5 نقاط</button>
 
       <div class="row" style="margin-top:10px;">
@@ -86,7 +77,7 @@
       </div>
 
       <p class="muted" style="margin-top:12px;">
-        ملاحظة: المكافأة تعتمد على الرجوع بعد العدّاد. هذا نظام “تحفيز” مو إثبات مشاهدة 100%.
+        ملاحظة: هذا زر تحفيزي. يعتمد على رجوع المستخدم بعد العدّاد، مو إثبات مشاهدة 100%.
       </p>
     </section>
 
@@ -94,13 +85,13 @@
     <section id="how" class="card hide">
       <div class="big">شلون تشتغل؟</div>
       <p class="muted">
-        1) تلصق رابط Smartlink من Adsterra داخل خانة الرابط وتضغط حفظ.<br/>
-        2) تضغط “شاهد إعلان” — ينفتح الرابط بتبويب جديد.<br/>
-        3) ترجع بعد ما يخلص العدّاد — تاخذ نقاط.<br/>
+        1) تضغط “شاهد إعلان”.<br/>
+        2) ينفتح نفس موقعك بتبويب جديد حتى يظهر Social Bar.<br/>
+        3) ترجع بعد العدّاد — تاخذ نقاط.<br/>
       </p>
       <div class="card" style="padding:12px;">
         <div class="muted">
-          نصيحة: خَلّي المكافأة مرة كل فترة (كولداون) حتى ما يصير سبام.
+          النظام بيه كولداون حتى يمنع التكرار السريع.
         </div>
       </div>
     </section>
@@ -109,11 +100,11 @@
     <section id="policy" class="card hide">
       <div class="big">سياسة بسيطة</div>
       <p class="muted">
-        هذا الموقع يعرض روابط إعلانية من طرف ثالث. نحن لا نجمع بيانات شخصية حساسة.
+        هذا الموقع يعرض محتوى إعلاني من طرف ثالث (Adsterra). نحن لا نجمع بيانات شخصية حساسة.
         النقاط تُحفظ محليًا على جهازك فقط عبر التخزين المحلي (LocalStorage).
       </p>
       <p class="muted">
-        إذا واجهت إعلان مزعج أو غير مناسب، لا تفتح الرابط مرة ثانية وبلغنا داخل القناة/الصفحة الخاصة بك.
+        إذا واجهت إعلان غير مناسب، أغلقه ولا تكمل عليه.
       </p>
     </section>
   </main>
@@ -123,14 +114,13 @@
   </footer>
 
 <script>
-  // ====== Settings (تقدر تغيرها لاحقاً) ======
+  // ====== Settings ======
   const REWARD_POINTS = 5;      // كم نقطة لكل مرة
   const WAIT_SECONDS = 15;      // كم ثانية ينتظر
   const COOLDOWN_SECONDS = 60;  // منع تكرار (ثانية)
 
   // ====== Storage keys ======
   const K_POINTS = "p_points";
-  const K_URL = "p_ad_url";
   const K_PENDING_UNTIL = "p_pending_until";
   const K_COOLDOWN_UNTIL = "p_cooldown_until";
   const K_LAST_REWARD = "p_last_reward";
@@ -139,11 +129,8 @@
   const pointsEl = document.getElementById("points");
   const statusEl = document.getElementById("status");
   const lastRewardEl = document.getElementById("lastReward");
-  const adUrlInput = document.getElementById("adUrl");
 
   const watchBtn = document.getElementById("watchBtn");
-  const saveUrlBtn = document.getElementById("saveUrl");
-  const clearUrlBtn = document.getElementById("clearUrl");
   const resetPointsBtn = document.getElementById("resetPoints");
   const testNoAdBtn = document.getElementById("testNoAd");
 
@@ -158,8 +145,6 @@
   const now = () => Date.now();
   const getInt = (k, d=0) => parseInt(localStorage.getItem(k) || String(d), 10);
   const setInt = (k, v) => localStorage.setItem(k, String(v));
-  const getStr = (k, d="") => localStorage.getItem(k) || d;
-  const setStr = (k, v) => localStorage.setItem(k, v);
 
   function fmtTime(ts){
     if(!ts) return "—";
@@ -183,12 +168,10 @@
     const pendingUntil = getInt(K_PENDING_UNTIL, 0);
     const cooldownUntil = getInt(K_COOLDOWN_UNTIL, 0);
 
-    adUrlInput.value = getStr(K_URL, "");
-
     const lastReward = getInt(K_LAST_REWARD, 0);
     lastRewardEl.textContent = fmtTime(lastReward);
 
-    // إذا عدّاد المكافأة شغال
+    // عدّاد المكافأة
     if(pendingUntil > now()){
       watchBtn.disabled = true;
       const s = Math.ceil((pendingUntil - now())/1000);
@@ -196,7 +179,7 @@
       return;
     }
 
-    // إذا انتهى الانتظار وهناك مكافأة معلّقة: امنحها مرة وحدة
+    // انتهى الانتظار: امنح المكافأة مرة وحدة
     if(pendingUntil && pendingUntil <= now()){
       localStorage.removeItem(K_PENDING_UNTIL);
       setInt(K_POINTS, pts + REWARD_POINTS);
@@ -213,50 +196,25 @@
     }
 
     watchBtn.disabled = false;
-    if(!getStr(K_URL,"")){
-      statusEl.innerHTML = `<span class="warn">ضع رابط Smartlink ثم احفظ.</span>`;
-      watchBtn.disabled = true;
-    } else {
-      statusEl.textContent = "جاهز.";
-    }
+    statusEl.textContent = "جاهز.";
   }
 
-  function startFlow(openAd){
-    const url = getStr(K_URL,"");
-    if(openAd && !url){
-      alert("لازم تلصق رابط Smartlink وتحفظه أولاً.");
-      return;
-    }
+  function startFlow(openTab){
+    // فتح نفس الموقع بتبويب جديد (حتى يظهر Social Bar)
+    if(openTab) window.open(window.location.href, "_blank");
 
-    // منع تكرار
+    // كولداون + انتظار
     setInt(K_COOLDOWN_UNTIL, now() + COOLDOWN_SECONDS*1000);
-    // عداد المكافأة
     setInt(K_PENDING_UNTIL, now() + WAIT_SECONDS*1000);
 
-    if(openAd) window.open(url, "_blank");
     render();
 
-    // تحديث عداد كل ثانية
+    // تحديث كل ثانية
     const t = setInterval(()=>{
       render();
       if(!localStorage.getItem(K_PENDING_UNTIL)) clearInterval(t);
     }, 1000);
   }
-
-  // ====== Events ======
-  saveUrlBtn.addEventListener("click", ()=>{
-    const v = adUrlInput.value.trim();
-    if(!v){ alert("ألصق رابط Smartlink أولاً."); return; }
-    setStr(K_URL, v);
-    render();
-    alert("تم حفظ الرابط ✅");
-  });
-
-  clearUrlBtn.addEventListener("click", ()=>{
-    localStorage.removeItem(K_URL);
-    adUrlInput.value = "";
-    render();
-  });
 
   watchBtn.addEventListener("click", ()=> startFlow(true));
   testNoAdBtn.addEventListener("click", ()=> startFlow(false));
@@ -269,7 +227,6 @@
     render();
   });
 
-  // رجوع المستخدم للصفحة
   window.addEventListener("focus", render);
   document.addEventListener("visibilitychange", render);
 
@@ -280,5 +237,9 @@
   setTab("home");
   render();
 </script>
+
+<!-- ✅ Adsterra Social Bar Script -->
+<script src="https://pl28335027.effectivegatecpm.com/fc/d9/17/fcd9174c24958969b13e116e750d5380.js"></script>
+
 </body>
 </html>
